@@ -1,0 +1,93 @@
+using System;
+
+namespace MastermindGame
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Random random = new Random();
+            int[] answer = new int[4];
+
+            // Generate a random 4-digit answer
+            for (int i = 0; i < 4; i++)
+            {
+                answer[i] = random.Next(1, 7); // Generate a random number between 1 and 6
+            }
+
+            int attempts = 0;
+            bool hasWon = false;
+
+            Console.WriteLine("Welcome to Mastermind!");
+            Console.WriteLine("Try to guess the 4-digit number (each digit between 1 and 6). You have 10 attempts.");
+
+            while (attempts < 10)
+            {
+                Console.Write("Attempt #" + (attempts + 1) + ": ");
+                string input = Console.ReadLine();
+                if (input.Length != 4)
+                {
+                    Console.WriteLine("Invalid input. Please enter a 4-digit number.");
+                    continue;
+                }
+
+                int[] guess = new int[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    if (!int.TryParse(input[i].ToString(), out guess[i]) || guess[i] < 1 || guess[i] > 6)
+                    {
+                        Console.WriteLine("Invalid input. Please enter a 4-digit number with digits between 1 and 6.");
+                        break;
+                    }
+                }
+
+                if (ArrayEquals(answer, guess))
+                {
+                    hasWon = true;
+                    break;
+                }
+
+                CompareArrays(answer, guess);
+                attempts++;
+            }
+
+            if (hasWon)
+            {
+                Console.WriteLine("Congratulations! You guessed the number correctly.");
+            }
+            else
+            {
+                Console.WriteLine("Sorry, you have run out of attempts. The correct number was: " + string.Join("", answer));
+            }
+        }
+
+        static bool ArrayEquals(int[] arr1, int[] arr2)
+        {
+            for (int i = 0; i < arr1.Length; i++)
+            {
+                if (arr1[i] != arr2[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        static void CompareArrays(int[] answer, int[] guess)
+        {
+            for (int i = 0; i < answer.Length; i++)
+            {
+                if (guess[i] == answer[i])
+                {
+                    Console.Write("+");
+                }
+                else if (Array.IndexOf(answer, guess[i]) != -1)
+                {
+                    Console.Write("-");
+                }
+            }
+            Console.WriteLine();
+        }
+    }
+}
+
